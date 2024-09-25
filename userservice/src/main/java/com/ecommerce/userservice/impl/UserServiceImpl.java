@@ -248,6 +248,12 @@ public class UserServiceImpl implements UserService {
 	    return userOrderDto;
 	}
 
+	@Override
+	public String getOrderByOrderId(Long orderId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 
 }

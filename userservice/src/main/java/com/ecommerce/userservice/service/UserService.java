@@ -23,4 +23,6 @@ public interface UserService {
     Cart getCartByUserId(Long userId);
     
     UserOrderDto createOrder(Long userId,String paymentType);
+    
+    String getOrderByOrderId(Long orderId);
 }
