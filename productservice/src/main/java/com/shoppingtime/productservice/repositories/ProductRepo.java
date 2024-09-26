@@ -9,6 +9,6 @@ import com.shoppingtime.productservice.entities.Product;
 public interface ProductRepo extends JpaRepository<Product, Long> {
 	
 	List<Product> findByCategory(String category);
-
+	List<Product> findByBrand(String brand);
 
 }
