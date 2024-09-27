@@ -35,6 +35,7 @@ import com.ecommerce.userservice.repositories.UserRepo;
 import com.ecommerce.userservice.service.UserService;
 import com.shoppingtime.cartservice.dto.OrderDTO;
 import com.shoppingtime.cartservice.entities.Cart;
+import com.ecommerce.userservice.events.UserRegisteredEventPublisher;
 
 
 @Service
@@ -59,6 +60,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private JwtService jwtService;
+	
+	@Autowired
+	private UserRegisteredEventPublisher userRegisteredEventPublisher;
 
 	@Override
 	public boolean registerUser(User user, List<String> roleNames) {
@@ -99,6 +103,8 @@ public class UserServiceImpl implements UserService {
 
 		// Save the user to the database
 		userRepo.save(user);
+		
+		userRegisteredEventPublisher.publishUserRegisteredEvent(user.getEmail());
 
 		return true; // Return true if registration is successful
 	}
