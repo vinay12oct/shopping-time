@@ -17,6 +17,7 @@ import com.shoppingtime.cartservice.dto.OrderDTO;
 import com.shoppingtime.cartservice.entities.Cart;
 import com.shoppingtime.cartservice.entities.Order;
 import com.shoppingtime.cartservice.entities.OrderItem;
+import com.shoppingtime.cartservice.event.OrderEventPublisher;
 import com.shoppingtime.cartservice.exception.InvalidOrderException;
 import com.shoppingtime.cartservice.exception.OrderNotFoundException;
 import com.shoppingtime.cartservice.exception.PaymentFailedException;
@@ -30,13 +31,15 @@ import com.shoppingtime.paymentservice.entity.Payment;
 
 @Service
 public class OrderServiceImpl implements OrderService {
-
+	
+	private final OrderEventPublisher orderEventPublisher;
 	private final OrderRepository orderRepository;
 	private final CartService cartService;
 
-	public OrderServiceImpl(OrderRepository orderRepository, CartService cartService) {
+	public OrderServiceImpl(OrderRepository orderRepository, CartService cartService,OrderEventPublisher orderEventPublisher) {
 		this.orderRepository = orderRepository;
 		this.cartService = cartService;
+		this.orderEventPublisher = orderEventPublisher;
 	}
 
 	@Transactional
@@ -132,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
 	    cartService.clearCart(userId);
         
 	    OrderDTO dto = OrderDTO.from(savedOrder);
-
+	  
 	    return dto;
 	}
 
@@ -163,4 +166,6 @@ public class OrderServiceImpl implements OrderService {
 		order.setStatus("Cancelled");
 		orderRepository.save(order);
 	}
+	
+	
 }
