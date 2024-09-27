@@ -14,11 +14,11 @@ public class UserRegisteredEventListener {
     private NotificationService notificationService; // Inject the NotificationService
 
     @EventListener
-    public void handleUserRegisteredEvent(UserRegisteredEvent event) {
+    public void handleUserRegisteredEvent(UserRegisteredEvent registeredEvent) {
         // Handle the event and send an email
-        System.out.println("User Registered Successfully with Email: " + event.getUserEmail());
+        System.out.println("User Registered Successfully with Email: " + registeredEvent.getUserEmail());
 
         // Call NotificationService to send an email
-        notificationService.sendEmail(event.getUserEmail());
+        notificationService.sendEmail(registeredEvent.getUserEmail());
     }
 }

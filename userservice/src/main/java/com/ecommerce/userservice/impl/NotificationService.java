@@ -17,9 +17,21 @@ public class NotificationService {
             // Create a simple mail message
             SimpleMailMessage message = new SimpleMailMessage();
             message.setTo(email);
-            message.setSubject("Registration Successful");
-            message.setText("Thank you for choosing our service! Your registration is complete with email ID: " + email + 
-                            ". Now you can log in using your email and password.");
+            message.setSubject("Welcome to ShoppingTime - Your Registration is Successful!");
+            message.setText(
+                    "Hi there,\n\n" +
+                    "Thank you for signing up at ShoppingTime! We are excited to have you on board. " +
+                    "Your account has been successfully created with the email ID: " + email + ".\n\n" +
+                    "What's next?\n" +
+                    "You can now explore a wide variety of products, add items to your cart, and shop at your convenience. " +
+                    "Don't forget to check out our latest offers and deals tailored just for you!\n\n" +
+                    "To get started, simply log in with your email and password and start shopping.\n\n" +
+                    "If you have any questions or need support, feel free to reach out to our customer service team anytime at support@shoppingtime.com.\n\n" +
+                    "Happy Shopping!\n" +
+                    "The ShoppingTime Team\n\n" +
+                    "--------------------------------------------\n" +
+                    "ShoppingTime - Your one-stop destination for all your shopping needs!"
+            );
 
             // Send the email
             mailSender.send(message);
