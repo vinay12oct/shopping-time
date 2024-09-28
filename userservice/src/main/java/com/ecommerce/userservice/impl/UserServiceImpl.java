@@ -22,7 +22,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
 import com.ecommerce.userservice.dto.UserDto;
 import com.ecommerce.userservice.dto.UserOrderDto;
 import com.ecommerce.userservice.entities.Role;
