@@ -77,5 +77,11 @@ public class ProductServiceImpl implements ProductService {
             throw new ProductServiceException("Failed to update product with id " + id, e);
         }
     }
+
+	@Override
+	public List<Product> searchProducts(String searchTerm, String brand, String category) {
+		
+		return productRepo.findBySearchAndFilter(searchTerm, brand, category);
+	}
 }
 
