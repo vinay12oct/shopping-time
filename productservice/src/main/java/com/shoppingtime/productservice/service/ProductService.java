@@ -20,4 +20,6 @@ public interface ProductService {
 
     
     Product updateProduct(Product product, Long id);
+    
+    List<Product> searchProducts(String searchTerm, String brand, String category);
 }

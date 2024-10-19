@@ -44,10 +44,8 @@ public class OrderServiceImpl implements OrderService {
 
 	@Transactional
 	@Override
-	public OrderDTO createOrder(Long userId,String paymentType) {
+	public OrderDTO createOrder(Long userId, String paymentType) {
 	    // Logic to convert cart items into an order and save to the database
-		
-		
 	    Cart cart = cartService.getCartByUserId(userId);
 
 	    if (cart == null || cart.getItems().isEmpty()) {
@@ -58,20 +56,20 @@ public class OrderServiceImpl implements OrderService {
 	    Order order = new Order();
 	    order.setUserId(userId);
 
-	 // Map Cart items to Order items
+	    // Map Cart items to Order items
 	    List<OrderItem> orderItems = cart.getItems().stream()
 	        .map(cartItem -> {
 	            // Create a new OrderItem object
 	            OrderItem orderItem = new OrderItem();
-	            
+
 	            // Set the product ID, quantity, and price from cartItem
 	            orderItem.setProductId(cartItem.getProductId());
 	            orderItem.setQuantity(cartItem.getQuantity());
 	            orderItem.setPrice(cartItem.getPrice());
-	            
+
 	            // Set the order for each OrderItem
-	            orderItem.setOrder(order); // This ensures the bidirectional relationship is set
-	            
+	            orderItem.setOrder(order); // Ensures the bidirectional relationship is set
+
 	            return orderItem; // Return the created OrderItem
 	        })
 	        .collect(Collectors.toList());
@@ -82,11 +80,11 @@ public class OrderServiceImpl implements OrderService {
 	    order.setTotalPrice(cart.getTotalPrice());
 	    order.setStatus("Pending");
 	    order.setOrderDate(LocalDateTime.now());
-	    
+
 	    // Save the order first to generate the orderId
 	    Order savedOrder = orderRepository.save(order);
 
-	    // Process payment if payment type is online
+	    // Check if the payment type is "ONLINE"
 	    if (paymentType.matches("ONLINE")) {
 	        // Create PaymentDTO object
 	        PaymentDTO paymentDTO = new PaymentDTO();
@@ -112,12 +110,12 @@ public class OrderServiceImpl implements OrderService {
 	            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
 	                Payment payment = response.getBody();
 	                if (payment.getStatus().equalsIgnoreCase("COMPLETED")) { // Assuming Payment has this method
-	                	savedOrder.setPaymentStatus(true);
-	                	savedOrder.setTransactionId(payment.getTransactionId());
-	                	savedOrder.setStatus("COMPLETED");
-	                	savedOrder.setPaymentType("ONLINE");
+	                    savedOrder.setPaymentStatus(true);
+	                    savedOrder.setTransactionId(payment.getTransactionId());
+	                    savedOrder.setStatus("COMPLETED");
+	                    savedOrder.setPaymentType("ONLINE");
 	                } else {
-	                	savedOrder.setPaymentStatus(false);
+	                    savedOrder.setPaymentStatus(false);
 	                    throw new PaymentFailedException("Payment failed, transaction ID: " + payment.getTransactionId());
 	                }
 	            } else {
@@ -126,16 +124,22 @@ public class OrderServiceImpl implements OrderService {
 	        } catch (Exception e) {
 	            throw new PaymentFailedException("Payment service error: " + e.getMessage());
 	        }
+	    } else if (paymentType.equalsIgnoreCase("CASH ON DELIVERY")) {
+	        // Handling for Cash on Delivery (COD)
+	        savedOrder.setPaymentStatus(false);  // No payment done upfront
+	        savedOrder.setStatus("PENDING DELIVERY"); // COD orders are pending until delivered
+	        savedOrder.setPaymentType("CASH ON DELIVERY");
 	    }
 
-	    // Save the order
-	     orderRepository.save(savedOrder);
+	    // Save the order with the final status
+	    orderRepository.save(savedOrder);
 
 	    // Clear the cart after the order is created
 	    cartService.clearCart(userId);
-        
+
+	    // Convert the saved order to OrderDTO
 	    OrderDTO dto = OrderDTO.from(savedOrder);
-	  
+
 	    return dto;
 	}
 
