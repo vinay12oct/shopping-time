@@ -38,12 +38,13 @@ public class SecurityConfig {
     // Security filter chain to define access rules
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+        http.cors().and()
                 .csrf(csrf -> csrf.disable())  // Updated CSRF disabling method
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/public/**").permitAll()  // Allow public access without authentication
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")  // Only accessible by ADMIN role
                         .requestMatchers("/api/user/**").hasAnyAuthority("USER", "ADMIN")  // USER or ADMIN role access
+                        .requestMatchers("/api/products/**").hasAnyAuthority("USER", "ADMIN")
                         .anyRequest().authenticated()  // All other endpoints require authentication
                 )
                 .httpBasic(withDefaults())

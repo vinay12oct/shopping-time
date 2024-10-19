@@ -61,7 +61,7 @@ public class UserController {
     @GetMapping("/public/welcome")
     public  String greet(){
 
-        return  "Welcome to Shopping time !!!!!";
+        return  "Welcome to Shopping time !!!!! this is user service";
     }
     
     @GetMapping("/public/welcome/{id}")
@@ -73,9 +73,16 @@ public class UserController {
     
     
     @PostMapping("/public/login")
-    public  String getLogin(@RequestBody User user){
-    	
-        return userService.verify(user) ;
+    public ResponseEntity<String> getLogin(@RequestBody User user) {
+        String jwtToken = userService.verify(user); // Verify login credentials and return token if valid
+
+        if (jwtToken != null) {
+            // Login successful, return JWT token with 200 OK status
+            return ResponseEntity.ok(jwtToken);
+        } else {
+            // Login failed, return 401 Unauthorized
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
+        }
     }
 
     @PostMapping("/public/register")
@@ -116,7 +123,7 @@ public class UserController {
     @GetMapping("/user/welcome")
     public  String userGreet(){
 
-        return  "Welcome !!!!!";
+        return  "Welcome  !!!!!   this is user service";
     }
     
    

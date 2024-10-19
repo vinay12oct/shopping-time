@@ -131,7 +131,8 @@ public class UserServiceImpl implements UserService {
 
 			// If authentication is successful, return a success message (you can replace
 			// this with a JWT token)
-			return jwtService.generateToken(user.getEmail());
+		     User userFromDB = userRepo.findByEmail(user.getEmail()).get();
+			return jwtService.generateToken(user.getEmail(),userFromDB.getId());
 
 		} catch (BadCredentialsException e) {
 			// Handle bad credentials (incorrect username or password)
@@ -260,5 +261,4 @@ public class UserServiceImpl implements UserService {
 	}
 
 	
-
 }

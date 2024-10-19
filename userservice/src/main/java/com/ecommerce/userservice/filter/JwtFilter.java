@@ -57,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             // Load user details from the user service
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-            logger.info("user name in jwt filter class in validate method "+userDetails.getAuthorities());
+            logger.info("User Service : user name in jwt filter class in validate method "+userDetails.getAuthorities());
             // Validate the token
             if (jwtService.validateToken(token, userDetails.getUsername())) {
                 // If valid, create an authentication token
